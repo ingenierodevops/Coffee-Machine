@@ -139,8 +139,47 @@ files:
         CoffeeMachineTest('machine.coffee_machine').run_tests()
   learner_created: false
 feedback_link: https://hyperskill.org/projects/68/stages/368/implement#comment
-status: Solved
+status: Failed
 feedback:
-  message: Congratulations!
-  time: Thu, 21 Jan 2021 16:03:09 UTC
-record: -1
+  message: |-
+    Wrong answer in test #1
+
+    Your output:
+    400 of water
+    540 of milk
+    120 of coffee beans
+    9 of disposable cups
+    550 of money
+    Right output:
+    Yes, I can make that amount of coffee
+
+    Please find below the output of your program during this failed test.
+    Note that the '>' character indicates the beginning of the input line.
+
+    ---
+
+    The coffee machine has:
+    400 of water
+    540 of milk
+    120 of coffee beans
+    9 of disposable cups
+    550 of money
+
+    Write action(buy, fill, take):
+    > 300
+
+    The coffee machine has:
+    400 of water
+    540 of milk
+    120 of coffee beans
+    9 of disposable cups
+    550 of money
+    ----
+    400 of water
+    540 of milk
+    120 of coffee beans
+    9 of disposable cups
+    550 of money
+    ----
+  time: Fri, 22 Jan 2021 11:10:28 UTC
+record: 3
