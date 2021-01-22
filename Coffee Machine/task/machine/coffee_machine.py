@@ -49,23 +49,54 @@ def print_status(stat_mach):
     print(stat_mach[2], coffee_status_text)
     print(stat_mach[3], cup_status_text)
     print(stat_mach[4], money_status_text)
+    print()
 
 def menu():
-    print("Write action(buy, fill, take):")
+    print("Write action(buy, fill, take, remaining, exit):")
     return input()
 
-def analize_action(action):
+def analize_action(action, status):
+    print()
     if action == "buy":
         tipo_cafe = choose_coffee()
-        make_coffee(tipo_cafe)
+        if tipo_cafe != "back":
+            if check_coffee(tipo_cafe) == False:
+                make_coffee(tipo_cafe)
     elif action == "fill":
         fill_machine()
     elif action == "take":
         take_money()
-
+    elif action == "remaining":
+        print_status(status)
+    elif action == "exit":
+        return False
+    return True
 def choose_coffee():
-    print("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:")
+    print("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:")
     return input()
+
+def check_coffee(c_type):
+    global machine_status
+    tipo_number = 0
+    if c_type == "1":
+        tipo_number = 0
+    elif c_type == "2":
+        tipo_number = 1
+    elif c_type == "3":
+        tipo_number = 2
+    index = 0
+    puedo = True
+    for state in machine_status:
+        state = state - coffe_quantities[tipo_number][index]
+        if state < 0:
+            puedo = False
+        index += 1
+    if puedo == True:
+        print("I have enough resources, making you a coffee!")
+        return False
+    else:
+        print("I can't make a cup of coffee")
+        return True
 
 
 def make_coffee(c_type):
@@ -101,12 +132,14 @@ def take_money():
     machine_status[4] = 0
     print("I gave you $" + str(money_gave))
 
-print_status(machine_status)
-print()
-action = menu()
-analize_action(action)
-print()
-print_status(machine_status)
+## print_status(machine_status)
+## print()
+sigue = True
+while sigue:
+    action = menu()
+    sigue = analize_action(action, machine_status)
+##print()
+#  print_status(machine_status)
 
 #  Ingredientes de un café
 #  water = 200 #
