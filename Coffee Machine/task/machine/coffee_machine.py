@@ -13,173 +13,113 @@ ask_milk = "Write how many ml of milk the coffee machine has:"
 ask_coffee = "Write how many grams of coffee beans the coffee machine has:"
 
 how_many = "Write how many cups of coffee you will need:"
-# print(start)
-# print(grind)
-# print(boil)
-# print(mixing)
-# print(coffee)
-# print(milk)
-# print(ready)
+
 
 # initial status
 status = "The coffee machine has:"
 
-water_status = 400
-water_status_text = "of water"
+water_status_text = " of water"
+milk_status_text = " of milk"
+coffee_status_text = " of coffee beans"
+cup_status_text = " of disposable cups"
+money_status_text = " of money"
 
-milk_status = 540
-milk_status_text = "of milk"
-
-coffee_status = 120
-coffee_status_text = "of coffee beans"
-
-cup_status = 9
-cup_status_text = "of disposable cups"
-
-money_status = 550
-money_status_text = "of money"
-
-machine_status = [water_status, milk_status, coffee_status, cup_status, money_status]
 coffe_quantities = [[250, 0, 16, 1, -4],[350, 75, 20, 1, -7],[200, 100, 12, 1, -6]]
 
-def print_status(stat_mach):
-    print(status)
-    print(stat_mach[0], water_status_text)
-    print(stat_mach[1], milk_status_text)
-    print(stat_mach[2], coffee_status_text)
-    print(stat_mach[3], cup_status_text)
-    print(stat_mach[4], money_status_text)
-    print()
+class CoffeeMachine:
+    def __init__(self, water_status, milk_status, coffee_status, cup_status, money_status):
+        self.machine_status = [water_status, milk_status, coffee_status, cup_status, money_status]
+        self.machine_state = "waiting"
 
-def menu():
-    print("Write action(buy, fill, take, remaining, exit):")
-    return input()
+    def __str__(self):
+        texto = status
+        texto = texto + '\n' + str(self.machine_status[0]) + water_status_text
+        texto = texto + '\n' + str(self.machine_status[1]) + milk_status_text
+        texto = texto + '\n' + str(self.machine_status[2]) + coffee_status_text
+        texto = texto + '\n' + str(self.machine_status[3]) + cup_status_text
+        texto = texto + '\n' + str(self.machine_status[4]) + money_status_text + '\n'
+        return texto
 
-def analize_action(action, status):
+    def fill_machine(self):
+        # todo this method must be called for every inputed string not reading input here
+
+        if self.machine_state == "waiting":  # waiting for instructions
+            print("Write how many ml of water do you want to add:")
+            self.machine_status[0] += int(input())
+            print("Write how many ml of milk do you want to add:")
+            self.machine_status[1] += int(input())
+            print("Write how many grams of coffee beans do you want to add:")
+            self.machine_status[2] += int(input())
+            print("Write how many disposable cups of coffee do you want to add:")
+            self.machine_status[3] += int(input())
+
+    def check_coffee(self, c_type):
+        tipo_number = 0
+        if c_type == "1":
+            tipo_number = 0
+        elif c_type == "2":
+            tipo_number = 1
+        elif c_type == "3":
+            tipo_number = 2
+        index = 0
+        puedo = True
+        for state in self.machine_status:
+            state = state - coffe_quantities[tipo_number][index]
+            if state < 0:
+                puedo = False
+            index += 1
+        if puedo == True:
+            print("I have enough resources, making you a coffee!")
+            return False
+        else:
+            print("I can't make a cup of coffee")
+            return True
+
+    def make_coffee(self, c_type):
+        tipo_number = 0
+        if c_type == "1":
+            tipo_number = 0
+        elif c_type == "2":
+            tipo_number = 1
+        elif c_type == "3":
+            tipo_number = 2
+        index = 0
+        for state in self.machine_status:
+            state = state - coffe_quantities[tipo_number][index]
+            self.machine_status[index] = state
+            index += 1
+
+    def take_money(self):
+        money_gave = self.machine_status[4]
+        self.machine_status[4] = 0
+        print("I gave you $" + str(money_gave))
+
+
+
+
+def analize_action(action, coffee_machine):
     print()
     if action == "buy":
-        tipo_cafe = choose_coffee()
+        print("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:")
+        tipo_cafe = input()
         if tipo_cafe != "back":
-            if check_coffee(tipo_cafe) == False:
-                make_coffee(tipo_cafe)
+            if not coffee_machine.check_coffee(tipo_cafe):
+                coffee_machine.make_coffee(tipo_cafe)
     elif action == "fill":
-        fill_machine()
+        coffee_machine.fill_machine()
     elif action == "take":
-        take_money()
+        coffee_machine.take_money()
     elif action == "remaining":
-        print_status(status)
+        print(coffee_machine)
     elif action == "exit":
         return False
     return True
-def choose_coffee():
-    print("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:")
-    return input()
-
-def check_coffee(c_type):
-    global machine_status
-    tipo_number = 0
-    if c_type == "1":
-        tipo_number = 0
-    elif c_type == "2":
-        tipo_number = 1
-    elif c_type == "3":
-        tipo_number = 2
-    index = 0
-    puedo = True
-    for state in machine_status:
-        state = state - coffe_quantities[tipo_number][index]
-        if state < 0:
-            puedo = False
-        index += 1
-    if puedo == True:
-        print("I have enough resources, making you a coffee!")
-        return False
-    else:
-        print("I can't make a cup of coffee")
-        return True
 
 
-def make_coffee(c_type):
-    global machine_status
-    tipo_number = 0
-    if c_type == "1":
-        tipo_number = 0
-    elif c_type == "2":
-        tipo_number = 1
-    elif c_type == "3":
-        tipo_number = 2
-    index = 0
-    for state in machine_status:
-        state = state - coffe_quantities[tipo_number][index]
-        machine_status[index] = state
-        index += 1
+coffee_machine = CoffeeMachine(400, 540, 120, 9, 550)
 
-def fill_machine():
-    global machine_status
-    print("Write how many ml of water do you want to add:")
-    machine_status[0] += int(input())
-    print("Write how many ml of milk do you want to add:")
-    machine_status[1] += int(input())
-    print("Write how many grams of coffee beans do you want to add:")
-    machine_status[2] += int(input())
-    print("Write how many disposable cups of coffee do you want to add:")
-    machine_status[3] += int(input())
-
-
-def take_money():
-    global machine_status
-    money_gave = machine_status[4]
-    machine_status[4] = 0
-    print("I gave you $" + str(money_gave))
-
-## print_status(machine_status)
-## print()
 sigue = True
 while sigue:
-    action = menu()
-    sigue = analize_action(action, machine_status)
-##print()
-#  print_status(machine_status)
-
-#  Ingredientes de un café
-#  water = 200 #
-#  water_text = "ml of water"
-#  milk = 50 #
-#  milk_text = "ml of milk"
-#  coffee_beams = 15 #
-#  coffee_text = "g of coffee beans"
-
-#  texts = [water_text, milk_text, coffee_text]
-#  quantities = [water, milk, coffee_beams]
-
-#  yes_can = "Yes, I can make that amount of coffee"
-
-#  print(ask_water)
-#  water_in_machine = int(input())
-#  print(ask_milk)
-#  milk_in_machine = int(input())
-#  print(ask_coffee)
-#  coffee_in_machine = int(input())
-
-#  print(how_many)
-#  number_coffees = int(input())
-
-#  water_coffees = water_in_machine / water
-#  milk_coffees = milk_in_machine / milk
-#  coffee_coffees = coffee_in_machine / coffee_beams
-#  capacidad = [water_coffees, milk_coffees, coffee_coffees]
-
-#  capacidad_real = min(capacidad)
-
-#  if capacidad_real >= number_coffees:
-    #      extra = capacidad_real - number_coffees
-    #  if extra > 1:
-    #          print("Yes, I can make that amount of coffee (and even", int(extra),"more than that)")
-    #  else:
-#          print("Yes, I can make that amount of coffee")
-#  else:
-#      print("No, I can make only", int(capacidad_real), "cups of coffee")
-#print("For", number_coffees, "cups of coffee you will need:")
-
-# for index in range(len(quantities)):
-#    print(quantities[index] * number_coffees, texts[index])
+    print("Write action(buy, fill, take, remaining, exit):")
+    action = input()
+    sigue = analize_action(action, coffee_machine)
